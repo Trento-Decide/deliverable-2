@@ -1,12 +1,200 @@
 % !TeX spellcheck = it_IT
 \chapter{Implementazione}
 
+\section{Stack delle tecnologie}
+
+\begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Livello} & \textbf{Tecnologia} & \textbf{Motivazione} \\
+    \midrule
+    Linguaggio & TypeScript & Sicurezza rispetto ai tipi. \\
+    Front-end & Next.js & Framework React con routing basato sulla struttura delle directory e altre utilità. \\
+    Stile & Bootstrap Italia & Design system ufficiale della Pubblica Aamministrazione italiana, garantisce accessibilità e coerenza visiva con altri siti di essa. \\
+    Back-end & Express.js & Framework HTTP minimale. \\
+    Database & PostgreSQL & Sotto. \\
+    Autenticazione & JWT + bcrypt & Token stateless per le sessioni; hashing sicuro delle password. \\
+    \bottomrule
+\end{tabularx}
+
+\subsection{Scelta di PostgreSQL rispetto a MongoDB}
+
+Per la natura dell'applicazione sono richieste integrità referenziale tramite chiavi esterne, vincoli di unicità e CHECK per impedire inconsistenze, transazioni ACID per operazioni composte e JOIN efficienti per la ricerca con filtri multipli.
+
+MongoDB manca di queste funzionalità e sarebbe stato necessario replicarle a livello applicativo.
+
 \section{Organizzazione della repository}
+
+\dirtree{%
+.1 trento-decide/.
+.2 backend/.
+.3 src/.
+.4 server.ts \DTcomment{Entry point}.
+.4 app.ts \DTcomment{Configurazione Express}.
+.4 database.ts \DTcomment{Pool di connessione PostgreSQL}.
+.4 routes/ \DTcomment{Route dell'API}.
+.5 auth.ts, proposte.ts, sondaggi.ts, \ldots.
+.4 middleware/ \DTcomment{Autenticazione JWT}.
+.4 services/ \DTcomment{Validazione form dinamici}.
+.4 utils/ \DTcomment{Variabili d'ambiente, JWT, parsing}.
+.4 sql/ \DTcomment{Query per l'inizializzazione del DB}.
+.4 \_\_tests\_\_/ \DTcomment{Test}.
+.3 package.json.
+.2 frontend/.
+.3 app/ \DTcomment{App Router}.
+.4 page.tsx \DTcomment{Homepage}.
+.4 accedi/, registrati/, proposte/, \ldots \DTcomment{Pagine}.
+.4 components/ \DTcomment{Componenti riutilizzabili}.
+.3 lib/ \DTcomment{Utilità e interazione con l'API}.
+.5 api.ts, local.ts, theme.ts.
+.3 public/ \DTcomment{Asset statici}.
+.3 package.json.
+.2 shared/ \DTcomment{Modelli e validazione condivisi}.
+.3 models.ts \DTcomment{Tipi}.
+.3 auth.ts \DTcomment{Tipi autenticazione}.
+.3 validation/ \DTcomment{Schemi Zod}.
+.4 auth.ts.
+.4 forms.ts.
+.3 package.json.
+}
 
 \section{Strategia di branching e organizzazione del lavoro}
 
+Il progetto adotta un modello di branching ispirato a \textbf{GitHub Flow}. Il branch \texttt{main} rappresenta lo stato stabile e funzionante del progetto. Per ogni nuova funzionalità viene creato un branch per cui verrà aperta una pull request, permettendo la revisione del codice prima del merge.
+
+\begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Branch} & \textbf{Autore} & \textbf{Descrizione} \\
+    \midrule
+    \texttt{scheletro} & Tommaso & Struttura iniziale del progetto (PR~\#1). \\
+    \texttt{backend.ts} & Alessandro & Migrazione del backend a TypeScript, configurato Express e pool PostgreSQL (PR~\#2). \\
+    \texttt{frontend-parziale} & Youssef & Prime pagine del front-end: header, footer, ricerca e tema Bootstrap Italia (PR~\#3). \\
+    \texttt{impl-proposte-login} & Tommaso & Implementazione delle proposte e autenticazione con JWT (PR~\#4, \#6). \\
+    \texttt{registration} & Alessandro & Registrazione utenti con validazione e hashing password (PR~\#5). \\
+    \texttt{er\_model} & Alessandro & Schema ER definitivo e script di popolazione del DB (PR~\#7). \\
+    \texttt{rebase-clean} & Tommaso & Allineamento dei modelli, validazione Zod, pulizia generale del codice (PR~\#10). \\
+    \texttt{homepage} & Youssef & Homepage, revisione UI, pagina di accesso e ricerca avanzata (PR~\#11). \\
+    \texttt{sondaggi-completo} & Alessandro & Sondaggi e dashboard admin con statistiche (PR~\#12). \\
+    \texttt{rimozione-non-previsti} & Alessandro & Rimozione di funzionalità non previste: allegati, notifiche, condivisione. (PR~\#14). \\
+    \bottomrule
+\end{tabularx}
+
 \section{Dipendenze}
+
+\begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Dipendenza} & \textbf{Utilizzo} \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Comuni}} \\
+    \addlinespace
+    \texttt{typescript} & Compilatore TypeScript. \\
+    \texttt{eslint} & Linter per il controllo del codice. \\
+    \texttt{zod} & Validazione e parsing dei dati. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Back-end}} \\
+    \addlinespace
+    \texttt{express} & Express.js \\
+    \texttt{pg} & Driver PostgreSQL per Node.js. \\
+    \texttt{bcrypt} & Hashing sicuro delle password. \\
+    \texttt{jsonwebtoken} & Generazione e verifica dei token JWT. \\
+    \texttt{cors} & Gestione delle policy Cross-Origin Resource Sharing. \\
+    \texttt{dotenv} & Caricamento delle variabili d'ambiente da \texttt{.env}. \\
+    \texttt{vitest} & Framework di testing. \\
+    \texttt{supertest} & Test HTTP delle rotte Express. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Front-end}} \\
+    \addlinespace
+    \texttt{next} & Next.js \\
+    \texttt{react} / \texttt{react-dom} & React \\
+    \texttt{bootstrap-italia} & Bootstrap Italia. \\
+    \texttt{leaflet} / \texttt{react-leaflet} & Mappe interattive. \\
+    \texttt{leaflet-draw} & Strumenti per disegnare sulle mappe. \\
+    \texttt{jwt-decode} & Decodifica dei token JWT. \\
+    \texttt{@splidejs/splide} & Dipendenza di \texttt{bootstrap-italia} \\
+    \texttt{sass} & Preprocessore CSS utilizzato per \texttt{bootstrap-italia}. \\
+    \bottomrule
+\end{tabularx}
 
 \section{Database}
 
+\begin{tabularx}{\textwidth}{lX}
+    \toprule
+    \textbf{Tabella} & \textbf{Descrizione} \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Utenti e configurazione}} \\
+    \addlinespace
+    \texttt{roles} & Ruoli utente (cittadino, moderatore, admin). \\
+    \texttt{users} & Anagrafica utenti con hash bcrypt della password, ruolo e stato di ban. \\
+    \texttt{categories} & Categorie delle proposte con \texttt{form\_schema} JSONB per i campi aggiuntivi. \\
+    \texttt{statuses} & Stati del ciclo di vita delle proposte (es.\ bozza, pubblicata, approvata). \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Proposte}} \\
+    \addlinespace
+    \texttt{proposals} & Proposte cittadine con dati aggiuntivi in JSONB. \\
+    \texttt{proposal\_history} & Storico delle versioni precedenti di ogni proposta. \\
+    \texttt{proposal\_votes} & Voti sulle proposte (\texttt{+1} / \texttt{-1}). \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Sondaggi}} \\
+    \addlinespace
+    \texttt{polls} & Sondaggi. \\
+    \texttt{poll\_questions} & Domande. \\
+    \texttt{poll\_options} & Opzioni di risposta per ogni domanda. \\
+    \texttt{poll\_answers} & Risposte degli utenti. \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Interazioni e moderazione}} \\
+    \addlinespace
+    \texttt{favourites} & Proposte e sondaggi preferiti. \\
+    \texttt{user\_views} & Traccia le visualizzazioni delle proposte. \\
+    \texttt{notifications} & Notifiche. \\
+    \texttt{user\_sanctions} & Sanzioni applicate agli utenti dai moderatori. \\
+    \bottomrule
+\end{tabularx}
+
 \section{Testing}
+
+I test sono scritti con \textbf{Vitest} e \textbf{Supertest}. Il database è sostituito da un mock per isolarli.
+
+\begin{tabularx}{\textwidth}{llX}
+    \toprule
+    \textbf{Endpoint} & \textbf{Precondizioni} & \textbf{Risultato atteso} \\
+    \midrule
+    \multicolumn{3}{l}{\textbf{Autenticazione} --- \texttt{auth.test.ts}} \\
+    \addlinespace
+    \texttt{POST /auth/login} & Corpo vuoto & 400 errore di validazione. \\
+    \texttt{POST /auth/login} & Utente inesistente & 401 credenziali invalide. \\
+    \texttt{POST /auth/login} & Password errata & 401 credenziali invalide. \\
+    \texttt{POST /auth/login} & Credenziali valide & 200 con token JWT e dati utente. \\
+    \texttt{POST /auth/login} & Utente bannato & 403 utente bannato. \\
+    \addlinespace
+    \texttt{POST /auth/register} & Corpo vuoto & 400 errore di validazione. \\
+    \texttt{POST /auth/register} & Password debole & 400 errore di validazione. \\
+    \texttt{POST /auth/register} & Nome utente già in uso & 409 nome utente duplicato. \\
+    \texttt{POST /auth/register} & Email già registrata & 409 email duplicata. \\
+    \texttt{POST /auth/register} & Dati validi & 201 registrazione avvenuta. \\
+    \midrule
+    \multicolumn{3}{l}{\textbf{Middleware JWT} --- \texttt{middleware.test.ts}} \\
+    \addlinespace
+    \texttt{GET /protected} & Senza header Authorization & 401 token mancante. \\
+    \texttt{GET /protected} & Header malformato & 401 token invalido. \\
+    \texttt{GET /protected} & Token scaduto & 403 token scaduto. \\
+    \texttt{GET /protected} & Token valido & 200 con dati utente decodificati. \\
+    \midrule
+    \multicolumn{3}{l}{\textbf{Proposte} --- \texttt{proposte.test.ts}} \\
+    \addlinespace
+    \texttt{POST /proposte/bozza} & Senza token & 401 non autenticato. \\
+    \texttt{POST /proposte/bozza} & Token valido, dati corretti & 201 bozza creata con id. \\
+    \addlinespace
+    \texttt{DELETE /proposte/:id} & Senza token & 401 non autenticato. \\
+    \texttt{DELETE /proposte/:id} & Proposta inesistente & 404 non trovata. \\
+    \texttt{DELETE /proposte/:id} & Utente non autore & 403 non autorizzato. \\
+    \texttt{DELETE /proposte/:id} & Autore della proposta & 204 eliminata. \\
+    \addlinespace
+    \texttt{POST /proposte/:id/vota} & Senza token & 401 non autenticato. \\
+    \texttt{POST /proposte/:id/vota} & Valore di voto non valido & 400 voto invalido. \\
+    \texttt{POST /proposte/:id/vota} & Voto valido (+1) & 200 con voto e totale aggiornato. \\
+    \midrule
+    \multicolumn{3}{l}{\textbf{Altro} --- \texttt{auth.test.ts}} \\
+    \addlinespace
+    \texttt{GET /nonexistent} & --- & 404 endpoint non trovato. \\
+    \bottomrule
+\end{tabularx}
+
