@@ -1,2 +1,54 @@
 % !TeX spellcheck = it_IT
 \chapter{Web API}
+
+Le API sono state documentate seguendo le specifiche openapi3, e la documentazione è consultabile pullicamente all'indirizzo: \url{https://app.swaggerhub.com/apis/tndecide/API/1.0}.
+
+\section{Struttura e note sulle API}
+Le rotte descritte nel seguente file .yaml sono sintetizzabili in:
+\begin{itemize}
+	\item \textbf{/auth} - login, register, provider SPID/CIE
+	\item \textbf{/utente} - delete account
+	\item \textbf{/proposte} - CRUD proposte, bozze, pubblicazione, voto, preferiti
+	\item \textbf{/sondaggi} - lista, dettaglio, creazione (admin), voto
+	\item \textbf{/cerca} - ricerca globale
+	\item \textbf{/config} - categorie, form schema, stati
+	\item \textbf{/dashboard} - statistiche (admin)
+\end{itemize}
+
+di seguito alcune note su implementazioni rilevanti.
+
+\subsection{/auth}
+\begin{itemize}
+	\item \textbf{/login} - JWT stateless, al momento del login viene fornito all'utente un token d'accesso
+	\item \textbf{/provider} - rotta placeholder per emulare SPID/CIE, fornisce un token fittizio
+\end{itemize}
+
+\subsection{/proposte}
+Struttura molto ricca di endpoints, implementa dalla bozza al versioning del sistema delle proposte del software.
+\begin{itemize}
+	\item \textbf{CRUD proposals} - gestione di creazione / visualizzazione / modifica ed eliminazione delle proposte.
+	\item \textbf{autorizzazioni} - Per ogni operazione relativa a modifica ed eliminazione viene richiesto dimostrare la paternità dell'oggetto.
+	\item \textbf{versionamento} - per ogni PUT/:id il sistema registra una nuova modifica e resetta i voti a 0.
+\end{itemize}
+
+\subsection{/cerca}
+Ricerca combinata su proposte e sondaggi tramite un unico endpoint. I risultati arrivano misti, discriminati successicamente dal campo \texttt{type}.
+
+\subsection{/config}
+Endpoint read-only. Utile al frontend nella popolazione dei form dinamici.
+\begin{itemize}
+	\item \textbf{form schema} - ogni categoria porta con sé uno schema JSON (\texttt{formSchema}) che descrive i campi aggiuntivi da mostrare nella creazione di una proposta. Il frontend li renderizza senza conoscerli a priori.
+\end{itemize}
+
+\subsection{/dashboard}
+Singola rotta completamente riservata all'utente admin, restituisce le statistiche del sistema.
+\begin{itemize}
+	\item \textbf{protezione} - controllo doppio: JWT e verifica del ruolo \textbf{admin}.
+\end{itemize}
+
+
+\section{Contenuto esteso documentazione}
+La specifica delle API è disponibile nel repository al link: \url{https://github.com/Trento-Decide/trento-decide}.
+
+\lstinputlisting{oas3.yaml}
+
