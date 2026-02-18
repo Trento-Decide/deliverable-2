@@ -57,6 +57,45 @@ MongoDB manca di queste funzionalità e sarebbe stato necessario replicarle a li
 .3 package.json.
 }
 
+\section{Organizzazione del lavoro}
+
+\subsection{Divisione dei requisiti funzionali}
+
+\begin{tabularx}{\textwidth}{l l X}
+    \toprule
+    \textbf{Membro} & \textbf{RF} & \textbf{Descrizione} \\
+    \midrule
+    Youssef
+    & RF2.10    & Votazione \\
+    & RF3.4     & Ordinamento delle proposte \\
+    & RF3.5     & Filtraggio delle proposte \\
+    &           & Design generale e UI overhaul \\
+    &           & Homepage \\
+    &           & Ricerca avanzata (frontend e backend) \\
+    \midrule
+    Alessandro
+    &           & Inizializzazione del backend in TypeScript \\
+    &           & Modello ER e popolazione del database \\
+    & RF1.1     & Registrazione (con hashing bcrypt) \\
+    & RF5.1     & Dashboard amministrativa con statistiche \\
+    & RF5.3     & Sondaggi (creazione, visualizzazione, votazione) \\
+    &           & Gestione ruoli utente \\
+    &           & Documentazione API (specifica OpenAPI) \\
+    \midrule
+    Tommaso
+    & RF1.3     & Login (rotte JWT, pagina di accesso) \\
+    & RF1.4     & Logout \\
+    & RF1.5.3   & Eliminazione del profilo \\
+    & RF2.1     & Creazione proposta \\
+    & RF2.2     & Salvataggio come bozza \\
+    & RF2.3     & Pubblicazione proposta \\
+    & RF2.5     & Eliminazione proposta \\
+    & RF3.1     & Gestione dei preferiti (backend e icona frontend) \\
+    &           & Test con Vitest e Supertest \\
+    &           & Preparazione alla produzione (SSL, build, Render) \\
+    \bottomrule
+\end{tabularx}
+
 \subsection{Requisiti funzionali non realizzati}
 
 I seguenti requisiti funzionali non sono stati implementati in quanto la loro complessità è stata giudicata eccessiva rispetto all'utilità per la dimostrazione del funzionamento dell'applicazione.
@@ -133,9 +172,11 @@ I seguenti requisiti funzionali non sono stati implementati in quanto la loro co
     Non è presente la possibilità di redigere e pubblicare report di valutazione sulle proposte.
 \end{itemize}
 
-\section{Strategia di branching e organizzazione del lavoro}
+\subsection{Amministrazione della repository}
 
 Il progetto adotta un modello di branching ispirato a \textbf{GitHub Flow}. Il branch \texttt{main} rappresenta lo stato stabile e funzionante del progetto. Per ogni nuova funzionalità viene creato un branch per cui verrà aperta una pull request, permettendo la revisione del codice prima del merge.
+
+In totale sono stati effettuati 89 commit, così distribuiti: Tommaso (49), Youssef (23) e Alessandro (17). Lo sbilanciamento deriva dal fatto che Tommaso si è occupato della manutenzione generale della repository, comportando numerosi commit di "fix" minuscoli e di attività concernenti l'organizzazione e distribuzione del codice.
 
 \begin{tabularx}{\textwidth}{llX}
     \toprule
@@ -227,7 +268,7 @@ Il progetto adotta un modello di branching ispirato a \textbf{GitHub Flow}. Il b
 
 \section{Testing}
 
-I test sono scritti con \textbf{Vitest} e \textbf{Supertest}. Il database è sostituito da un mock per isolarli.
+I test sono scritti con \textbf{Vitest} e \textbf{Supertest} nella cartella \texttt{\_\_tests\_\_} nel back-end. Il database è sostituito da un mock per isolarli.
 
 \begin{tabularx}{\textwidth}{llX}
     \toprule
