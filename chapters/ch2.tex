@@ -57,6 +57,82 @@ MongoDB manca di queste funzionalità e sarebbe stato necessario replicarle a li
 .3 package.json.
 }
 
+\subsection{Requisiti funzionali non realizzati}
+
+I seguenti requisiti funzionali non sono stati implementati in quanto la loro complessità è stata giudicata eccessiva rispetto all'utilità per la dimostrazione del funzionamento dell'applicazione.
+
+\paragraph{Autenticazione e gestione credenziali}
+\begin{itemize}
+  \item \textbf{RF1.2~-- Registrazione di moderatori e associazioni.}
+    Non esiste un'interfaccia amministrativa per la creazione di account moderatore o associazione;
+    tali account sono inseriti manualmente nel database.
+
+  \item \textbf{RF1.5.1~-- Modifica delle credenziali.}
+    Non è possibile modificare email, password o nome utente dal proprio profilo.
+
+  \item \textbf{RF1.5.2~-- Ricezione notifiche.}
+    Non è implementato alcun sistema di invio o ricezione delle notifiche via email.
+\end{itemize}
+
+\paragraph{Gestione delle proposte}
+\begin{itemize}
+  \item \textbf{RF2.6~-- Proposte collettive.}
+    Non è presente il ruolo ``associazione'' operativo né la possibilità di
+    pubblicare proposte collettive.
+
+  \item \textbf{RF2.8~-- Modifica collaborativa.}
+    Non sono presenti versionamento, storico consultabile delle versioni,
+    proposte di modifica da terzi, approvazione delle modifiche né ripristino di versioni precedenti.
+
+  \item \textbf{RF2.9~-- Endorsement.}
+    Non è possibile esprimere o rimuovere endorsement sulle proposte.
+\end{itemize}
+
+\paragraph{Personalizzazione e preferenze}
+\begin{itemize}
+  \item \textbf{RF3.2~-- Notifiche e avvisi.}
+    Le notifiche automatiche per variazioni di stato dei preferiti o delle proprie proposte non sono implementate.
+
+  \item \textbf{RF3.3~-- Cambio di lingua.}
+    L'interfaccia è disponibile solo in italiano.
+\end{itemize}
+
+\paragraph{Moderazione e qualità dei contenuti}
+\begin{itemize}
+  \item \textbf{RF4.1~-- Segnalazione dei contenuti.}
+    Non è presente la funzionalità di segnalazione contenuti da parte dei cittadini.
+
+  \item \textbf{RF4.2~-- Moderazione automatica.}
+    Non è implementato alcun sistema di rilevamento automatico di contenuti inappropriati.
+
+  \item \textbf{RF4.3~-- Coda di revisione.}
+    Non esiste l'interfaccia di moderazione né la coda di revisione.
+
+  \item \textbf{RF4.4~-- Rimozione dei contenuti.}
+    I moderatori non dispongono di funzionalità per rimuovere contenuti.
+
+  \item \textbf{RF4.5.1~-- Limitazioni sui cittadini.}
+    Non è possibile applicare limitazioni temporanee agli account dei cittadini.
+
+  \item \textbf{RF4.5.2~-- Limitazioni sulle associazioni.}
+    Non è implementato il flusso di proposta di limitazione all'amministrazione.
+
+  \item \textbf{RF4.5.3~-- Processo amministrativo per i provvedimenti gravi.}
+    Non è presente il processo di gestione dei provvedimenti gravi da parte dell'amministrazione.
+\end{itemize}
+
+\paragraph{Dashboard amministrativa}
+\begin{itemize}
+  \item \textbf{RF5.2~-- Report sull'attività del sistema.}
+    Non è possibile generare né scaricare report aggregati sull'attività della piattaforma.
+
+  \item \textbf{RF5.4~-- Modifica dello stato di una proposta.}
+    L'amministratore non può aggiornare lo stato delle proposte dalla dashboard.
+
+  \item \textbf{RF5.5~-- Pubblicare un report di valutazione.}
+    Non è presente la possibilità di redigere e pubblicare report di valutazione sulle proposte.
+\end{itemize}
+
 \section{Strategia di branching e organizzazione del lavoro}
 
 Il progetto adotta un modello di branching ispirato a \textbf{GitHub Flow}. Il branch \texttt{main} rappresenta lo stato stabile e funzionante del progetto. Per ogni nuova funzionalità viene creato un branch per cui verrà aperta una pull request, permettendo la revisione del codice prima del merge.
